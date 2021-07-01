@@ -1,0 +1,59 @@
+{
+  "name": "backend-developer-task",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:primozpadar/backend-developer-task.git",
+  "author": "primozpadar <primoz.padar1@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node build/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.12",
+    "@types/node": "^15.12.5",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "eslint": "^7.29.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "nodemon": "^2.0.8",
+    "prettier": "^2.3.2",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "none",
+    "singleQuote": true,
+    "printWidth": 120,
+    "tabWidth": 2,
+    "endOfLine": "auto"
+  },
+  "eslintConfig": {
+    "env": {
+      "es2021": true
+    },
+    "extends": [
+      "standard"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 12,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "semi": "off"
+    }
+  }
+}
