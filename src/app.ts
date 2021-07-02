@@ -1,13 +1,18 @@
 import express from 'express';
+import morgan from 'morgan';
+import { customErrorHandler, defaultErrorHandler } from './handlers/error';
+import authRouter from './routes/auth';
 
 const app = express();
 
+app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  console.log(req.body);
-  res.sendStatus(200);
-});
+app.use('/auth', authRouter);
+
+// Error handlers
+app.use(customErrorHandler);
+app.use(defaultErrorHandler);
 
 export default app;
