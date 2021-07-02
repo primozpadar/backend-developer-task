@@ -29,7 +29,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   if (!user) return next(new ApiError(403, 'user does not exist'));
 
   // validate password
-  const isValidPass = argon2.verify(user.password, password);
+  const isValidPass = await argon2.verify(user.password, password);
   if (!isValidPass) return next(new ApiError(403, 'incorrect password'));
 
   // create and send auth token (expires in 24h)
@@ -37,6 +37,21 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   res.json({ status: 'success', authToken });
 };
 
-export const changePassword = (_req: Request, res: Response) => {
-  res.sendStatus(200);
+export const changePassword = async (req: Request, res: Response, next: NextFunction) => {
+  const { username, oldPassword, newPassword } = req.body;
+
+  // find user (by username)
+  const user = await User.findOne({ where: { username } });
+  if (!user) return next(new ApiError(403, 'user does not exist'));
+
+  // validate password
+  const isValidPass = await argon2.verify(user.password, oldPassword);
+  if (!isValidPass) return next(new ApiError(403, 'incorrect password'));
+
+  // hash new password and update user in database
+  const hash = await argon2.hash(newPassword);
+  user.password = hash;
+  await user.save();
+
+  return res.json({ status: 'success' });
 };
