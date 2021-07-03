@@ -55,3 +55,17 @@ export const changePassword = async (req: Request, res: Response, next: NextFunc
 
   return res.json({ status: 'success' });
 };
+
+export const authenticateUser = async (req: Request, _res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(' ')[1];
+
+  if (!token) return next(new ApiError(401, 'token missing'));
+
+  jwt.verify(token, process.env.AUTH_KEY!, (err, user) => {
+    if (err) return next(new ApiError(403, 'invalid token'));
+    // @ts-ignore
+    req.user = user;
+    next();
+  });
+};
