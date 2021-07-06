@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import { celebrateErrorHandler, customErrorHandler, defaultErrorHandler } from './handlers/error';
 import authRouter from './routes/auth';
 import folderRouter from './routes/folder';
+import noteRouter from './routes/note';
 
 declare global {
   // eslint-disable-next-line no-unused-vars
@@ -22,6 +23,7 @@ app.use(express.json());
 
 app.use('/auth', authRouter);
 app.use('/folder', folderRouter);
+app.use('/note', noteRouter);
 
 // Error handlers
 app.use(customErrorHandler);
