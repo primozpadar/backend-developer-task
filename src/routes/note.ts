@@ -1,7 +1,8 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import express from 'express';
 import { authenticateUser } from '../controller/authController';
-import { createNote, NoteType } from '../controller/noteController';
+import { createNote } from '../controller/noteController';
+import { NoteType } from '../entity/Note';
 
 const router = express.Router();
 router.use(authenticateUser);
