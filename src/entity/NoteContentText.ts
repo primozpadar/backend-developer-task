@@ -9,7 +9,7 @@ export class NoteContentText extends BaseEntity {
   @Column()
   body: string;
 
-  @OneToOne(() => Note, (note) => note.content)
+  @OneToOne(() => Note, (note) => note.content, { onDelete: 'CASCADE' })
   @JoinColumn()
   note: Note;
 }

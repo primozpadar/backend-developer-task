@@ -76,3 +76,46 @@ export const getNoteById = async (req: Request, res: Response, next: NextFunctio
   if (!fullNote) return next(new ApiError(500));
   return res.json(fullNote);
 };
+
+export const deleteNoteById = async (req: Request, res: Response, next: NextFunction) => {
+  const noteId = req.params.id;
+  const userId = req.user.id;
+  const result = await Note.delete({ id: parseInt(noteId), user: { id: userId } });
+
+  if (result.affected && result.affected > 0) {
+    return res.sendStatus(200);
+  }
+
+  return next(new ApiError(403, 'note cant be deleted'));
+};
+
+export const updateNote = async (req: Request, res: Response, next: NextFunction) => {
+  const noteId = req.params.id;
+  const userId = req.user.id;
+  const note = await Note.findOne({ where: { id: noteId, user: { id: userId } } });
+  if (!note) return next(new ApiError(404, 'note does not exist'));
+
+  // update common data (stored in Node)
+  const { heading, isShared, folderId } = req.body;
+  if (heading) note.heading = heading;
+  if (isShared) note.isShared = isShared;
+
+  // update folder - if folder does not exist return error
+  if (folderId) {
+    const folder = await Folder.findOne({ where: { id: folderId, user: { id: userId } } });
+    if (!folder) return next(new ApiError(400, 'folder does not exist'));
+    note.folder = folder;
+  }
+
+  // update note content based on type. in case of wrong data type and content return error
+  if (note.type === NoteType.LIST && req.body.items) {
+    await NoteContentList.update({ note: { id: parseInt(noteId) } }, { items: req.body.items });
+  } else if (note.type === NoteType.TEXT && req.body.body) {
+    await NoteContentText.update({ note: { id: parseInt(noteId) } }, { body: req.body.body });
+  } else if ((note.type === NoteType.LIST && req.body.body) || (note.type === NoteType.TEXT && req.body.items)) {
+    return next(new ApiError(403, 'incorrect note data type'));
+  }
+
+  await note.save();
+  res.json(note);
+};

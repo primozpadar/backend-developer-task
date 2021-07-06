@@ -1,11 +1,18 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import express from 'express';
 import { authenticateUser } from '../controller/authController';
-import { createNote, getAllNotes, getNoteById } from '../controller/noteController';
+import { createNote, deleteNoteById, getAllNotes, getNoteById, updateNote } from '../controller/noteController';
 import { NoteType } from '../entity/Note';
 
 const router = express.Router();
 router.use(authenticateUser);
+
+// default node params - id
+const noteValidationParams = {
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.number().required()
+  })
+};
 
 // create note
 router.post(
@@ -33,14 +40,31 @@ router.post(
 router.get('/', getAllNotes);
 
 // get note by id (with content)
-router.get(
+router.get('/:id', celebrate(noteValidationParams), getNoteById);
+
+router.delete('/:id', celebrate(noteValidationParams), deleteNoteById);
+
+// update note
+router.put(
   '/:id',
   celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.number().required()
-    })
+    ...noteValidationParams,
+    [Segments.BODY]: Joi.alternatives().try(
+      Joi.object().keys({
+        heading: Joi.string().max(50).optional(),
+        items: Joi.array().items(Joi.string()).optional(),
+        isShared: Joi.boolean().optional(),
+        folderId: Joi.number().optional()
+      }),
+      Joi.object().keys({
+        heading: Joi.string().max(50).optional(),
+        body: Joi.string().optional(),
+        isShared: Joi.boolean().optional(),
+        folderId: Joi.number().optional()
+      })
+    )
   }),
-  getNoteById
+  updateNote
 );
 
 export default router;
