@@ -1,7 +1,7 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import express from 'express';
 import { authenticateUser } from '../controller/authController';
-import { createNote } from '../controller/noteController';
+import { createNote, getAllNotes, getNoteById } from '../controller/noteController';
 import { NoteType } from '../entity/Note';
 
 const router = express.Router();
@@ -27,6 +27,20 @@ router.post(
     )
   }),
   createNote
+);
+
+// get all notes (without content)
+router.get('/', getAllNotes);
+
+// get note by id (with content)
+router.get(
+  '/:id',
+  celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      id: Joi.number().required()
+    })
+  }),
+  getNoteById
 );
 
 export default router;
