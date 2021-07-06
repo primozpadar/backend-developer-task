@@ -20,7 +20,7 @@ export const getMyFolders = async (req: Request, res: Response) => {
 export const getFolderById = async (req: Request, res: Response, next: NextFunction) => {
   const folderId = req.params.id;
   const userId = req.user.id;
-  const folder = await Folder.findOne({ where: { id: folderId, user: { id: userId } } });
+  const folder = await Folder.findOne({ where: { id: folderId, user: { id: userId } }, relations: ['notes'] });
 
   if (!folder) return next(new ApiError(404, 'folder does not exist'));
 

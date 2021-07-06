@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Note } from './Note';
 import { User } from './User';
 
 @Entity()
@@ -11,4 +12,7 @@ export class Folder extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.folders, { nullable: false, onDelete: 'CASCADE' })
   user: User;
+
+  @OneToMany(() => Note, (note) => note.folder)
+  notes: Note[];
 }
