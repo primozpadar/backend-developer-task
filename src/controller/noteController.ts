@@ -44,17 +44,25 @@ export const createNote = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const getAllNotes = async (_req: Request, res: Response, _next: NextFunction) => {
-  const notes = await Note.find();
+export const getAllNotes = async (req: Request, res: Response, _next: NextFunction) => {
+  const userId = req.user.id;
+  const notes = await Note.find({ where: { user: { id: userId } } });
   return res.json({ notes });
 };
 
 export const getNoteById = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
+  const userId = req.user?.id;
 
   // get only note type (to simplify further querying)
-  const note = await Note.findOne(id, { select: ['type'] });
+  const note = await Note.findOne(id, { select: ['type', 'user', 'isShared'], relations: ['user'] });
   if (!note) return next(new ApiError(404, 'note does not exist'));
+
+  // if note is not shared or note is not requested by owner return error
+  const isOwner = !!userId && note.user.id === userId;
+  if (!isOwner && !note.isShared) {
+    return next(new ApiError(401, 'you dont have access to this note'));
+  }
 
   // get db connection and build basic query
   const noteConn = getConnection().getRepository(Note).createQueryBuilder('n').where('n.id = :id', { id });
