@@ -33,7 +33,9 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   if (!isValidPass) return next(new ApiError(403, 'incorrect password'));
 
   // create and send auth token (expires in 24h)
-  const authToken = jwt.sign({ username: user.username, name: user.name }, process.env.AUTH_KEY!, { expiresIn: '24h' });
+  const authToken = jwt.sign({ id: user.id, username: user.username, name: user.name }, process.env.AUTH_KEY!, {
+    expiresIn: '24h'
+  });
   res.json({ status: 'success', authToken });
 };
 
@@ -65,7 +67,7 @@ export const authenticateUser = async (req: Request, _res: Response, next: NextF
   jwt.verify(token, process.env.AUTH_KEY!, (err, user) => {
     if (err) return next(new ApiError(403, 'invalid token'));
     // @ts-ignore
-    req.user = user;
+    req.user = { ...user, id: parseInt(user.id) };
     next();
   });
 };
