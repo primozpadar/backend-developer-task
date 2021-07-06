@@ -33,6 +33,7 @@ export const createNote = async (req: Request, res: Response, next: NextFunction
     }
     await queryRunner.manager.save(content);
 
+    await queryRunner.commitTransaction();
     return res.json({ note: note! });
   } catch (err) {
     console.error(err);
