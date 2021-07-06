@@ -20,10 +20,10 @@ export const createNote = async (req: Request, res: Response, next: NextFunction
 
   if (type === NoteType.TEXT) {
     const { body } = req.body;
-    note = NoteText.create({ heading, body, folder });
+    note = NoteText.create({ heading, body, folder, user: { id: userId } });
   } else if (type === NoteType.LIST) {
     const { items } = req.body;
-    note = NoteList.create({ heading, items, folder });
+    note = NoteList.create({ heading, items, folder, user: { id: userId } });
   } else {
     return next(new ApiError());
   }
