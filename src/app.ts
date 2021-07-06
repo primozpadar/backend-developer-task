@@ -1,6 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
-import { customErrorHandler, defaultErrorHandler } from './handlers/error';
+import { celebrateErrorHandler, customErrorHandler, defaultErrorHandler } from './handlers/error';
 import authRouter from './routes/auth';
 import folderRouter from './routes/folder';
 
@@ -25,6 +25,7 @@ app.use('/folder', folderRouter);
 
 // Error handlers
 app.use(customErrorHandler);
+app.use(celebrateErrorHandler);
 app.use(defaultErrorHandler);
 
 export default app;
