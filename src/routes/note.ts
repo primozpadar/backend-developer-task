@@ -183,7 +183,16 @@ router.post(
  *      401:
  *        $ref: '#/components/responses/AuthError'
  */
-router.get('/', getAllNotes);
+router.get(
+  '/',
+  celebrate({
+    [Segments.QUERY]: Joi.object().keys({
+      shared: Joi.string().valid('ASC', 'DESC').optional(),
+      heading: Joi.string().valid('ASC', 'DESC').optional()
+    })
+  }),
+  getAllNotes
+);
 
 /**
  * DELETE NOTE

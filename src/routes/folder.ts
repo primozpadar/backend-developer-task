@@ -145,7 +145,17 @@ router.get('/', getMyFolders);
  *            schema:
  *              $ref: '#/components/schemas/FolderWithNotes'
  */
-router.get('/:id', celebrate(folderValidationParams), getFolderById);
+router.get(
+  '/:id',
+  celebrate({
+    ...folderValidationParams,
+    [Segments.QUERY]: Joi.object().keys({
+      shared: Joi.string().valid('ASC', 'DESC').optional(),
+      heading: Joi.string().valid('ASC', 'DESC').optional()
+    })
+  }),
+  getFolderById
+);
 
 /**
  * DELETE FOLDER BY ID

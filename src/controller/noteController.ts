@@ -5,6 +5,7 @@ import { Note, NoteType } from '../entity/Note';
 import { NoteContentList } from '../entity/NoteContentList';
 import { NoteContentText } from '../entity/NoteContentText';
 import { ApiError } from '../handlers/error';
+import { getSortingOptions } from '../utils/getSortingOptions';
 
 /**
  * ### CREATE NOTE
@@ -59,7 +60,10 @@ export const createNote = async (req: Request, res: Response, next: NextFunction
  */
 export const getAllNotes = async (req: Request, res: Response) => {
   const userId = req.user.id;
-  const notes = await Note.find({ where: { user: { id: userId } } });
+
+  const { shared, heading } = getSortingOptions(req);
+
+  const notes = await Note.find({ where: { user: { id: userId } }, order: { isShared: shared, heading } });
   return res.json({ notes });
 };
 

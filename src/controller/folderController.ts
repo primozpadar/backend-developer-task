@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
+import { getConnection } from 'typeorm';
 import { Folder } from '../entity/Folder';
+import { Note } from '../entity/Note';
 import { ApiError } from '../handlers/error';
+import { getSortingOptions } from '../utils/getSortingOptions';
 
 /**
  * ### CREATE FOLDER
@@ -35,10 +38,20 @@ export const getMyFolders = async (req: Request, res: Response) => {
 export const getFolderById = async (req: Request, res: Response, next: NextFunction) => {
   const folderId = req.params.id;
   const userId = req.user.id;
-  const folder = await Folder.findOne({ where: { id: folderId, user: { id: userId } }, relations: ['notes'] });
+  const { shared, heading } = getSortingOptions(req);
 
+  const folderQuery = getConnection()
+    .getRepository(Folder)
+    .createQueryBuilder('f')
+    .leftJoinAndMapMany('f.notes', Note, 'n', 'n.folderId = f.id')
+    .where('f.id = :folderId AND f.userId = :userId', { folderId, userId })
+    .addOrderBy('n.heading', heading || undefined);
+
+  if (shared) folderQuery.addOrderBy('n.isShared', shared);
+  if (heading) folderQuery.addOrderBy('n.heading', heading);
+
+  const folder = await folderQuery.getOne();
   if (!folder) return next(new ApiError(404, 'folder does not exist'));
-
   res.json(folder);
 };
 
