@@ -12,7 +12,36 @@ import {
 const router = express.Router();
 router.use(authenticateUser);
 
-// create folder
+/**
+ * CREATE FOLDER
+ * @openapi
+ * /folder:
+ *  post:
+ *    summary: Create new folder
+ *    tags: [Folder]
+ *    requestBody:
+ *      description: New folder data
+ *      required: true
+ *      content:
+ *        appliaction/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *            example:
+ *              name: 'New folder'
+ *    responses:
+ *      200:
+ *        description: Successful user registration
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                status:
+ *                  type: string
+ */
 router.post(
   '/',
   celebrate({

@@ -75,7 +75,7 @@ const router = express.Router();
  *            $ref: '#/components/schemas/UserRegister'
  *    responses:
  *      200:
- *        description: Successful login
+ *        description: Successful user registration
  *        content:
  *          application/json:
  *            schema:
@@ -155,7 +155,7 @@ router.post(
  *            $ref: '#/components/schemas/UserChangePassword'
  *    responses:
  *      200:
- *        description: Successful login
+ *        description: Successfully changed password
  *        content:
  *          application/json:
  *            schema:
