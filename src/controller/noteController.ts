@@ -6,6 +6,15 @@ import { NoteContentList } from '../entity/NoteContentList';
 import { NoteContentText } from '../entity/NoteContentText';
 import { ApiError } from '../handlers/error';
 
+/**
+ * ### CREATE NOTE
+ * Create new note with content
+ * @param {string} req.body.type Note type (TEXT or LIST)
+ * @param {string} req.body.heading Note's heading
+ * @param {string} req.body.folderId Folder to which note will belong
+ * @param {string} req.body.body (optional) note content if type is TEXT
+ * @param {string} req.body.items (optional) note content if type is LIST
+ */
 export const createNote = async (req: Request, res: Response, next: NextFunction) => {
   const { type, heading, folderId } = req.body;
   const userId = req.user.id;
@@ -44,12 +53,22 @@ export const createNote = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const getAllNotes = async (req: Request, res: Response, _next: NextFunction) => {
+/**
+ * ### GET ALL NOTES
+ * It finds all current user notes.
+ */
+export const getAllNotes = async (req: Request, res: Response) => {
   const userId = req.user.id;
   const notes = await Note.find({ where: { user: { id: userId } } });
   return res.json({ notes });
 };
 
+/**
+ * ### GET NOTE BY ID
+ * Returns note (by id) with full data.
+ * Allow user to get note if he is owner or allow everyone to get note if it is shared.
+ * @param {string} req.params.id Note ID
+ */
 export const getNoteById = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   const userId = req.user?.id;
@@ -85,6 +104,11 @@ export const getNoteById = async (req: Request, res: Response, next: NextFunctio
   return res.json(fullNote);
 };
 
+/**
+ * ### DELETE NOTE BY ID
+ * Only user's notes can be deleted
+ * @param {string} req.params.id Note ID
+ */
 export const deleteNoteById = async (req: Request, res: Response, next: NextFunction) => {
   const noteId = req.params.id;
   const userId = req.user.id;
@@ -97,13 +121,24 @@ export const deleteNoteById = async (req: Request, res: Response, next: NextFunc
   return next(new ApiError(403, 'note cant be deleted'));
 };
 
+/**
+ * ### UPDATE NOTE
+ * Change note's data.
+ * Type can not be changed.
+ * @param {string} req.params.id Note ID
+ * @param {string} req.body.heading (optional) Note's heading
+ * @param {string} req.body.folderId (optional) Folder to which note will belong
+ * @param {string} req.body.isShared (optional) Public or private note
+ * @param {string} req.body.body (optional) note content if type is TEXT
+ * @param {string} req.body.items (optional) note content if type is LIST
+ */
 export const updateNote = async (req: Request, res: Response, next: NextFunction) => {
   const noteId = req.params.id;
   const userId = req.user.id;
   const note = await Note.findOne({ where: { id: noteId, user: { id: userId } } });
   if (!note) return next(new ApiError(404, 'note does not exist'));
 
-  // update common data (stored in Node)
+  // update data stored in Node
   const { heading, isShared, folderId } = req.body;
   if (heading) note.heading = heading;
   if (isShared) note.isShared = isShared;
