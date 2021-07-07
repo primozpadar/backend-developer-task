@@ -13,13 +13,133 @@ const noteValidationParams = {
   })
 };
 
-// get note by id (with content)
+// type: Joi.equal(NoteType.LIST),
+// heading: Joi.string().required().max(50),
+// items: Joi.array().items(Joi.string()),
+// folderId: Joi.number().required()
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    TextNote:
+ *      type: object
+ *      properties:
+ *        type:
+ *          type: string
+ *          enum:
+ *            - TEXT
+ *        heading:
+ *          type: string
+ *        body:
+ *          type: string
+ *        folderId:
+ *          type: number
+ *        isShared:
+ *          type: boolean
+ *    ListNote:
+ *      type: object
+ *      properties:
+ *        type:
+ *          type: string
+ *          enum:
+ *            - LIST
+ *        heading:
+ *          type: string
+ *        items:
+ *          type: array
+ *          items:
+ *            type: string
+ *        folderId:
+ *          type: number
+ *        isShared:
+ *          type: boolean
+ *    NoteResponse:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: number
+ *        heading:
+ *          type: string
+ *        isShared:
+ *          type: string
+ *        type:
+ *          type: string
+ *        body:
+ *          type: string
+ *        content:
+ *          type: array
+ *          items:
+ *            type: string
+ */
+
+/**
+ * GET NOTE BY ID (with content)
+ * @openapi
+ * /note/{id}:
+ *  get:
+ *    summary: Get note by ID (authenticated)
+ *    tags: [Note]
+ *    security:
+ *      - BearerAuth: []
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        description: Folder ID
+ *        required: true
+ *        schema:
+ *          type: integer
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/NoteResponse'
+ *      400:
+ *        $ref: '#/components/responses/ValidationError'
+ *      401:
+ *        $ref: '#/components/responses/AuthError'
+ *      404:
+ *        $ref: '#/components/responses/Error'
+ */
 router.get('/:id', celebrate(noteValidationParams), authenticateUserWithoutError, getNoteById);
 
 // from here down, user must be authenticated to be able to modify/get/create notes
 router.use(authenticateUser);
 
-// create note
+/**
+ * CREATE NOTE
+ * @openapi
+ * /note:
+ *  post:
+ *    summary: Create new note
+ *    tags: [Note]
+ *    security:
+ *      - BearerAuth: []
+ *    requestBody:
+ *      description: Note data
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            anyOf:
+ *              - $ref: '#/components/schemas/TextNote'
+ *              - $ref: '#/components/schemas/ListNote'
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/NoteResponse'
+ *      400:
+ *        $ref: '#/components/responses/ValidationError'
+ *      401:
+ *        $ref: '#/components/responses/AuthError'
+ *      404:
+ *        $ref: '#/components/responses/Error'
+ */
 router.post(
   '/',
   celebrate({
@@ -42,11 +162,89 @@ router.post(
 );
 
 // get all notes (without content)
+/**
+ * GET ALL NOTES
+ * @openapi
+ * /note:
+ *  get:
+ *    summary: Get all my notes
+ *    tags: [Note]
+ *    security:
+ *      - BearerAuth: []
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/NoteResponse'
+ *      401:
+ *        $ref: '#/components/responses/AuthError'
+ */
 router.get('/', getAllNotes);
 
+/**
+ * DELETE NOTE
+ * @openapi
+ * /note/{id}:
+ *  delete:
+ *    summary: Delete note by ID
+ *    tags: [Note]
+ *    security:
+ *      - BearerAuth: []
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        description: Folder ID
+ *        required: true
+ *        schema:
+ *          type: integer
+ *    responses:
+ *      200:
+ *        description: Success
+ *      400:
+ *        $ref: '#/components/responses/ValidationError'
+ *      401:
+ *        $ref: '#/components/responses/AuthError'
+ *      403:
+ *        $ref: '#/components/responses/Error'
+ */
 router.delete('/:id', celebrate(noteValidationParams), deleteNoteById);
 
-// update note
+/**
+ * UPDATE NOTE
+ * @openapi
+ * /note/{id}:
+ *  put:
+ *    summary: Update note
+ *    tags: [Note]
+ *    security:
+ *      - BearerAuth: []
+ *    requestBody:
+ *      description: Note data
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            anyOf:
+ *              - $ref: '#/components/schemas/TextNote'
+ *              - $ref: '#/components/schemas/ListNote'
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/NoteResponse'
+ *      400:
+ *        $ref: '#/components/responses/ValidationError'
+ *      401:
+ *        $ref: '#/components/responses/AuthError'
+ *      404:
+ *        $ref: '#/components/responses/Error'
+ */
 router.put(
   '/:id',
   celebrate({

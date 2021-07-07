@@ -25,6 +25,8 @@ const router = express.Router();
  *      description: Access token is missing or invalid
  *    ValidationError:
  *      description: Invalid body, params or query
+ *    Error:
+ *      description: Generic error
  *  schemas:
  *    UserLogin:
  *      type: object
