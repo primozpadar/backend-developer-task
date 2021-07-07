@@ -12,6 +12,13 @@ import {
 const router = express.Router();
 router.use(authenticateUser);
 
+// default folder params - id
+const folderValidationParams = {
+  [Segments.PARAMS]: Joi.object().keys({
+    id: Joi.number().required()
+  })
+};
+
 /**
  * @openapi
  * components:
@@ -136,15 +143,7 @@ router.get('/', getMyFolders);
  *            schema:
  *              $ref: '#/components/schemas/FolderWithNotes'
  */
-router.get(
-  '/:id',
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.number().required()
-    })
-  }),
-  getFolderById
-);
+router.get('/:id', celebrate(folderValidationParams), getFolderById);
 
 /**
  * DELETE FOLDER BY ID
@@ -172,15 +171,7 @@ router.get(
  *      200:
  *        description: Success
  */
-router.delete(
-  '/:id',
-  celebrate({
-    [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.number().required()
-    })
-  }),
-  deleteFolderById
-);
+router.delete('/:id', celebrate(folderValidationParams), deleteFolderById);
 
 /**
  * UPDATE FOLDER
@@ -218,11 +209,9 @@ router.delete(
 router.put(
   '/:id',
   celebrate({
+    ...folderValidationParams,
     [Segments.BODY]: Joi.object().keys({
       name: Joi.string().required().max(20)
-    }),
-    [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.number().required()
     })
   }),
   updateFolder
