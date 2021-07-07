@@ -57,13 +57,26 @@ export const createNote = async (req: Request, res: Response, next: NextFunction
 /**
  * ### GET ALL NOTES
  * It finds all current user notes.
+ * By default it returns 5 notes. This can be overridden with query param *limit*.
+ * @param {('ASC' | 'DESC')} req.query.shared (optional) Sort by shared option
+ * @param {('ASC' | 'DESC')} req.query.heading (optional) Sort by heading
+ * @param {number} req.query.offset (optional) pagination option - default: 0
+ * @param {number} req.query.limit (optional) pagination option - default: 5
  */
 export const getAllNotes = async (req: Request, res: Response) => {
   const userId = req.user.id;
-
   const { shared, heading } = getSortingOptions(req);
 
-  const notes = await Note.find({ where: { user: { id: userId } }, order: { isShared: shared, heading } });
+  // type is checked in middleware
+  const offset = parseInt(req.query.offset as string) || 0;
+  const limit = parseInt(req.query.limit as string) || 5;
+
+  const notes = await Note.find({
+    where: { user: { id: userId } },
+    order: { isShared: shared, heading },
+    take: limit,
+    skip: offset
+  });
   return res.json({ notes });
 };
 

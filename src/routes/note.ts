@@ -207,7 +207,9 @@ router.get(
   celebrate({
     [Segments.QUERY]: Joi.object().keys({
       shared: Joi.string().valid('ASC', 'DESC').optional(),
-      heading: Joi.string().valid('ASC', 'DESC').optional()
+      heading: Joi.string().valid('ASC', 'DESC').optional(),
+      offset: Joi.number().optional(),
+      limit: Joi.number().optional()
     })
   }),
   getAllNotes
