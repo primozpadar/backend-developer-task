@@ -34,18 +34,28 @@ export const getMyFolders = async (req: Request, res: Response) => {
  * Find folder with given ID which belongs to current user.
  * If folder exists and current user is not its owner, it returns 404 error.
  * @param {number} req.params.id Folder's ID
+ * @param {('ASC' | 'DESC')} req.query.shared (optional) Sort by shared option
+ * @param {('ASC' | 'DESC')} req.query.heading (optional) Sort by heading
+ * @param {number} req.query.offset (optional) pagination option - default: 0
+ * @param {number} req.query.limit (optional) pagination option - default: 5
  */
 export const getFolderById = async (req: Request, res: Response, next: NextFunction) => {
   const folderId = req.params.id;
   const userId = req.user.id;
   const { shared, heading } = getSortingOptions(req);
 
+  // type is checked in middleware
+  const offset = parseInt(req.query.offset as string) || 0;
+  const limit = parseInt(req.query.limit as string) || 5;
+
   const folderQuery = getConnection()
     .getRepository(Folder)
     .createQueryBuilder('f')
     .leftJoinAndMapMany('f.notes', Note, 'n', 'n.folderId = f.id')
     .where('f.id = :folderId AND f.userId = :userId', { folderId, userId })
-    .addOrderBy('n.heading', heading || undefined);
+    .addOrderBy('n.heading', heading || undefined)
+    .offset(offset)
+    .limit(limit);
 
   if (shared) folderQuery.addOrderBy('n.isShared', shared);
   if (heading) folderQuery.addOrderBy('n.heading', heading);

@@ -151,6 +151,18 @@ router.get('/', getMyFolders);
  *          enum:
  *            - ASC
  *            - DESC
+ *      - in: query
+ *        name: offset
+ *        description: Pagination offset (default 0)
+ *        required: false
+ *        schema:
+ *          type: number
+ *      - in: query
+ *        name: limit
+ *        description: Pagination limit (default 5)
+ *        required: false
+ *        schema:
+ *          type: number
  *    responses:
  *      400:
  *        $ref: '#/components/responses/ValidationError'
