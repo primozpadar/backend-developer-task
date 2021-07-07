@@ -1,3 +1,6 @@
+const dir = process.env.NODE_ENV === 'development' ? 'src' : 'build';
+const extension = process.env.NODE_ENV === 'development' ? 'ts' : 'js';
+
 module.exports = {
   type: 'postgres',
   host: process.env.DATABASE_HOST,
@@ -7,8 +10,8 @@ module.exports = {
   password: process.env.DATABASE_PASSWORD,
   synchronize: process.env.NODE_ENV !== 'production',
   logging: process.env.NODE_ENV !== 'production',
-  entities: ['src/entity/**/*.ts'],
-  migrations: ['src/migration/**/*.ts'],
-  subscribers: ['src/subscriber/**/*.ts'],
-  cli: { entitiesDir: 'src/entity', migrationsDir: 'src/migration', subscribersDir: 'src/subscriber' }
+  entities: [`${dir}/entity/**/*.${extension}`],
+  migrations: [`${dir}/migration/**/*.${extension}`],
+  subscribers: [`${dir}/subscriber/**/*.${extension}`],
+  cli: { entitiesDir: `${dir}/entity`, migrationsDir: `${dir}/migration`, subscribersDir: `${dir}/subscriber` }
 };
