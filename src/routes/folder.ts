@@ -47,7 +47,9 @@ const folderValidationParams = {
  *        notes:
  *          type: array
  *          items:
- *            $ref: '#/components/schemas/Note'
+ *            anyOf:
+ *              - $ref: '#/components/schemas/TextNote'
+ *              - $ref: '#/components/schemas/ListNote'
  */
 
 /**
@@ -63,7 +65,7 @@ const folderValidationParams = {
  *      description: New folder data
  *      required: true
  *      content:
- *        appliaction/json:
+ *        application/json:
  *          schema:
  *            $ref: '#/components/schemas/FolderName'
  *    responses:
@@ -186,7 +188,7 @@ router.delete('/:id', celebrate(folderValidationParams), deleteFolderById);
  *      description: New folder data
  *      required: true
  *      content:
- *        appliaction/json:
+ *        application/json:
  *          schema:
  *            $ref: '#/components/schemas/FolderName'
  *    parameters:
