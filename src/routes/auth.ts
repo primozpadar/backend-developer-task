@@ -7,6 +7,24 @@ const router = express.Router();
 /**
  * @openapi
  * components:
+ *  securitySchemes:
+ *    BearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
+ *
+ * security:
+ *    - BearerAuth: []
+ */
+
+/**
+ * @openapi
+ * components:
+ *  responses:
+ *    AuthError:
+ *      description: Access token is missing or invalid
+ *    ValidationError:
+ *      description: Invalid body, params or query
  *  schemas:
  *    UserLogin:
  *      type: object
