@@ -133,6 +133,24 @@ router.get('/', getMyFolders);
  *        required: true
  *        schema:
  *          type: integer
+ *      - in: query
+ *        name: shared
+ *        description: Sort by shared property
+ *        required: false
+ *        schema:
+ *          type: string
+ *          enum:
+ *            - ASC
+ *            - DESC
+ *      - in: query
+ *        name: heading
+ *        description: Sort by heading
+ *        required: false
+ *        schema:
+ *          type: string
+ *          enum:
+ *            - ASC
+ *            - DESC
  *    responses:
  *      400:
  *        $ref: '#/components/responses/ValidationError'

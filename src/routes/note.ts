@@ -171,6 +171,25 @@ router.post(
  *    tags: [Note]
  *    security:
  *      - BearerAuth: []
+ *    parameters:
+ *      - in: query
+ *        name: shared
+ *        description: Sort by shared property
+ *        required: false
+ *        schema:
+ *          type: string
+ *          enum:
+ *            - ASC
+ *            - DESC
+ *      - in: query
+ *        name: heading
+ *        description: Sort by heading
+ *        required: false
+ *        schema:
+ *          type: string
+ *          enum:
+ *            - ASC
+ *            - DESC
  *    responses:
  *      200:
  *        description: Success
