@@ -1,5 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
+import path from 'path';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { celebrateErrorHandler, customErrorHandler, defaultErrorHandler } from './handlers/error';
@@ -19,7 +20,7 @@ declare global {
 
 const app = express();
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !process.env.JEST_WORKER_ID) {
   const swaggerDocs = swaggerJsDoc({
     swaggerDefinition: {
       openapi: '3.0.0',
@@ -29,9 +30,8 @@ if (process.env.NODE_ENV !== 'production') {
         version: '1.0'
       }
     },
-    apis: ['./src/routes/**/*']
+    apis: [path.join(__dirname, 'routes/**/*.ts')]
   });
-
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 }
 
