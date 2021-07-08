@@ -1,20 +1,20 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import express from 'express';
-import { changePassword, login, register } from '../controller/authController';
+import { changePassword, login, logout, register } from '../controller/authController';
 
 const router = express.Router();
 
 /**
  * @openapi
- * components:
+ *components:
  *  securitySchemes:
- *    BearerAuth:
- *      type: http
- *      scheme: bearer
- *      bearerFormat: JWT
+ *    cookieAuth:
+ *      type: apiKey
+ *      in: cookie
+ *      name: NOTES_API_COOKIE
  *
  * security:
- *    - BearerAuth: []
+ *    - cookieAuth: []
  */
 
 /**
@@ -22,7 +22,7 @@ const router = express.Router();
  * components:
  *  responses:
  *    AuthError:
- *      description: Access token is missing or invalid
+ *      description: Cookie is missing or invalid
  *    ValidationError:
  *      description: Invalid body, params or query
  *    Error:
@@ -51,12 +51,10 @@ const router = express.Router();
  *        username: myusername
  *        oldPassword: password123
  *        newPassword: password456
- *    UserCredentialsResponse:
+ *    UserLoginResponse:
  *      type: object
  *      properties:
  *        status:
- *          type: string
- *        authToken:
  *          type: string
  *    UserRegister:
  *      type: object
@@ -141,7 +139,12 @@ router.post(
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/UserCredentialsResponse'
+ *              $ref: '#/components/schemas/UserLoginResponse'
+ *        headers:
+ *          Set-Cookie:
+ *            schema:
+ *              type: string
+ *              example: NOTES_API_COOKIE=abcd123; Path=/; HttpOnly
  *      403:
  *        description: Incorrect login credentials
  *        content:
@@ -159,6 +162,18 @@ router.post(
   }),
   login
 );
+
+/**
+ * @openapi
+ * /auth/logout:
+ *  get:
+ *    summary: Logout user
+ *    tags: [Auth]
+ *    responses:
+ *      200:
+ *        description: Successfull logout
+ */
+router.get('/logout', logout);
 
 /**
  * @openapi

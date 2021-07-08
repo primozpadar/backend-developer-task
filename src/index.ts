@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
 import { createConnection } from 'typeorm';
 import app from './app';
+import { __prod__ } from './constants';
 
-if (process.env.NODE_ENV !== 'production') {
+if (!__prod__) {
   dotenv.config({ path: '.env' });
 }
 

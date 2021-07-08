@@ -60,7 +60,7 @@ const folderValidationParams = {
  *    summary: Create new folder
  *    tags: [Folder]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    requestBody:
  *      description: New folder data
  *      required: true
@@ -99,7 +99,7 @@ router.post(
  *    description: It returns all folders for current user
  *    tags: [Folder]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    responses:
  *      400:
  *        $ref: '#/components/responses/ValidationError'
@@ -125,7 +125,7 @@ router.get('/', getMyFolders);
  *    description: It returns folder for given id.
  *    tags: [Folder]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    parameters:
  *      - in: path
  *        name: id
@@ -195,7 +195,7 @@ router.get(
  *    summary: Delete folder by ID
  *    tags: [Folder]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    parameters:
  *      - in: path
  *        name: id
@@ -223,7 +223,7 @@ router.delete('/:id', celebrate(folderValidationParams), deleteFolderById);
  *    summary: Update folder's name
  *    tags: [Folder]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    requestBody:
  *      description: New folder data
  *      required: true

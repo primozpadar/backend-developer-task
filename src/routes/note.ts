@@ -1,6 +1,6 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import express from 'express';
-import { authenticateUser, authenticateUserWithoutError } from '../controller/authController';
+import { authenticateUser } from '../controller/authController';
 import { createNote, deleteNoteById, getAllNotes, getNoteById, updateNote } from '../controller/noteController';
 import { NoteType } from '../entity/Note';
 
@@ -81,7 +81,7 @@ const noteValidationParams = {
  *    summary: Get note by ID (authenticated)
  *    tags: [Note]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    parameters:
  *      - in: path
  *        name: id
@@ -103,7 +103,7 @@ const noteValidationParams = {
  *      404:
  *        $ref: '#/components/responses/Error'
  */
-router.get('/:id', celebrate(noteValidationParams), authenticateUserWithoutError, getNoteById);
+router.get('/:id', celebrate(noteValidationParams), getNoteById);
 
 // from here down, user must be authenticated to be able to modify/get/create notes
 router.use(authenticateUser);
@@ -116,7 +116,7 @@ router.use(authenticateUser);
  *    summary: Create new note
  *    tags: [Note]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    requestBody:
  *      description: Note data
  *      required: true
@@ -170,7 +170,7 @@ router.post(
  *    summary: Get all my notes
  *    tags: [Note]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    parameters:
  *      - in: query
  *        name: shared
@@ -235,7 +235,7 @@ router.get(
  *    summary: Delete note by ID
  *    tags: [Note]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    parameters:
  *      - in: path
  *        name: id
@@ -263,7 +263,7 @@ router.delete('/:id', celebrate(noteValidationParams), deleteNoteById);
  *    summary: Update note
  *    tags: [Note]
  *    security:
- *      - BearerAuth: []
+ *      - cookieAuth: []
  *    requestBody:
  *      description: Note data
  *      required: true

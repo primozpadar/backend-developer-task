@@ -18,7 +18,7 @@ import { getSortingOptions } from '../utils/getSortingOptions';
  */
 export const createNote = async (req: Request, res: Response, next: NextFunction) => {
   const { type, heading, folderId } = req.body;
-  const userId = req.user.id;
+  const userId = req.session.user!.id;
 
   const folder = await Folder.findOne({ where: { id: folderId, user: { id: userId } } });
   if (!folder) return next(new ApiError(400, 'folder does not exist'));
@@ -64,7 +64,7 @@ export const createNote = async (req: Request, res: Response, next: NextFunction
  * @param {number} req.query.limit (optional) pagination option - default: 5
  */
 export const getAllNotes = async (req: Request, res: Response) => {
-  const userId = req.user.id;
+  const userId = req.session.user!.id;
   const { shared, heading } = getSortingOptions(req);
 
   // type is checked in middleware
@@ -88,7 +88,7 @@ export const getAllNotes = async (req: Request, res: Response) => {
  */
 export const getNoteById = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
-  const userId = req.user?.id;
+  const userId = req.session.user?.id;
 
   // get only note type (to simplify further querying)
   const note = await Note.findOne(id, { select: ['type', 'user', 'isShared'], relations: ['user'] });
@@ -128,7 +128,7 @@ export const getNoteById = async (req: Request, res: Response, next: NextFunctio
  */
 export const deleteNoteById = async (req: Request, res: Response, next: NextFunction) => {
   const noteId = req.params.id;
-  const userId = req.user.id;
+  const userId = req.session.user!.id;
   const result = await Note.delete({ id: parseInt(noteId), user: { id: userId } });
 
   if (result.affected && result.affected > 0) {
@@ -151,7 +151,7 @@ export const deleteNoteById = async (req: Request, res: Response, next: NextFunc
  */
 export const updateNote = async (req: Request, res: Response, next: NextFunction) => {
   const noteId = req.params.id;
-  const userId = req.user.id;
+  const userId = req.session.user!.id;
   const note = await Note.findOne({ where: { id: noteId, user: { id: userId } } });
   if (!note) return next(new ApiError(404, 'note does not exist'));
 

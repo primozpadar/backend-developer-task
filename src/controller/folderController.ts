@@ -12,7 +12,7 @@ import { getSortingOptions } from '../utils/getSortingOptions';
  */
 export const createFolder = async (req: Request, res: Response) => {
   const { name } = req.body;
-  const id = req.user.id;
+  const id = req.session.user!.id;
   const folder = await Folder.create({ name, user: { id } }).save();
 
   res.json({ id: folder.id, name: folder.name });
@@ -23,7 +23,7 @@ export const createFolder = async (req: Request, res: Response) => {
  * Find all folders for current user.
  */
 export const getMyFolders = async (req: Request, res: Response) => {
-  const id = req.user.id;
+  const id = req.session.user!.id;
   const folders = await Folder.find({ where: { user: { id } } });
 
   res.json(folders);
@@ -41,7 +41,7 @@ export const getMyFolders = async (req: Request, res: Response) => {
  */
 export const getFolderById = async (req: Request, res: Response, next: NextFunction) => {
   const folderId = req.params.id;
-  const userId = req.user.id;
+  const userId = req.session.user!.id;
   const { shared, heading } = getSortingOptions(req);
 
   // type is checked in middleware
@@ -73,7 +73,7 @@ export const getFolderById = async (req: Request, res: Response, next: NextFunct
  */
 export const deleteFolderById = async (req: Request, res: Response, next: NextFunction) => {
   const folderId = req.params.id;
-  const userId = req.user.id;
+  const userId = req.session.user!.id;
   const result = await Folder.delete({ id: parseInt(folderId), user: { id: userId } });
 
   if (result.affected && result.affected > 0) {
@@ -94,7 +94,7 @@ export const updateFolder = async (req: Request, res: Response, next: NextFuncti
   const newName = req.body.name;
 
   const folderId = req.params.id;
-  const userId = req.user.id;
+  const userId = req.session.user!.id;
   const result = await Folder.update({ id: parseInt(folderId), user: { id: userId } }, { name: newName });
 
   if (result.affected && result.affected > 0) {
