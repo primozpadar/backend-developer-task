@@ -19,7 +19,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
   } catch (error) {
     // username duplicated error
     if (error.message.includes('duplicate key value')) return next(new ApiError(403, 'username already taken'));
-    else return next(new ApiError(500, 'unknown error'));
+    throw Error();
   }
 
   return res.json({ status: 'success' });
