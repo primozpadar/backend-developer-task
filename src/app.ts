@@ -37,7 +37,7 @@ if (!__prod__ && !__test__) {
         version: '1.0'
       }
     },
-    apis: [path.join(__dirname, 'routes/**/*.ts')]
+    apis: [path.join(__dirname, 'routes/**/*.js'), path.join(__dirname, 'routes/**/*.ts')]
   });
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 }

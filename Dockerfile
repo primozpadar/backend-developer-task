@@ -13,7 +13,7 @@ COPY ormconfig.js ormconfig.js
 
 RUN yarn build
 
-ENV NODE_ENV production
+ENV NODE_ENV ${NODE_ENV}
 
 EXPOSE 4000
 CMD [ "node", "build/index.js" ]

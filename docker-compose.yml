@@ -10,14 +10,18 @@ services:
     image: oratorij/backend
     environment:
       PORT: ${PORT}
-      AUTH_KEY: ${AUTH_KEY}
+      NODE_ENV: ${NODE_ENV}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      SESSION_SECRET: ${SESSION_SECRET}
       DATABASE_HOST: database
       DATABASE_PORT: 5432
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
+      REDIS_URL: redis:${REDIS_PORT}
     depends_on:
       - database
+      - redis
     ports:
       - '${PORT}:4000'
 
