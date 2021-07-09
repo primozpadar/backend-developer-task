@@ -1,5 +1,7 @@
 # Notes API
 
+API documentation is avalible on `/api-docs`.
+
 Create REST API that allows users to manage their notes.  
 Notes can be organized into folders for easier management.  
 API should allow user authentication through basic HTTP authentication (username and password).  
