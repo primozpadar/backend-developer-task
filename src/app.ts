@@ -27,7 +27,7 @@ if (!__prod__) {
 
 const app = express();
 
-if (!__prod__ && !__test__) {
+if (!__test__) {
   const swaggerDocs = swaggerJsDoc({
     swaggerDefinition: {
       openapi: '3.0.0',
@@ -63,7 +63,7 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
       sameSite: 'lax',
-      secure: __prod__
+      secure: false // !!! THIS SHOULD NEVER BE USED IN PRODUCTION !!!
     },
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET!,
