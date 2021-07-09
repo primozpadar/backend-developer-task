@@ -7,10 +7,9 @@ volumes:
 services:
   server:
     build: .
-    image: oratorij/backend
+    image: backend-developer-task-server
     environment:
       PORT: ${PORT}
-      NODE_ENV: ${NODE_ENV}
       CORS_ORIGIN: ${CORS_ORIGIN}
       SESSION_SECRET: ${SESSION_SECRET}
       DATABASE_HOST: database
@@ -23,7 +22,7 @@ services:
       - database
       - redis
     ports:
-      - '${PORT}:4000'
+      - '${PORT}:${PORT}'
 
   database:
     image: postgres:12-alpine

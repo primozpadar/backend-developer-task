@@ -1,11 +1,11 @@
 # Setup
 
-Provide a file with instructions on how to set up and use the API:
-* dependencies
-* variables to be set
-* run configs
-* file system permissions
-* ...
+Before running, `.env` file must be created with environment variables as shown in `.env.example` file.
 
-### Optional
-You can provide Docker and Docker Compose files instead.
+Run:
+
+```shell
+docker-compose up --build
+# or
+docker compose up --build
+```
