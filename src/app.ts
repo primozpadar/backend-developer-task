@@ -8,7 +8,7 @@ import morgan from 'morgan';
 import path from 'path';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { __prod__ } from './constants';
+import { __prod__, __test__ } from './constants';
 import { celebrateErrorHandler, customErrorHandler, defaultErrorHandler } from './handlers/error';
 import authRouter from './routes/auth';
 import folderRouter from './routes/folder';
@@ -27,7 +27,7 @@ if (!__prod__) {
 
 const app = express();
 
-if (!__prod__ && !process.env.JEST_WORKER_ID) {
+if (!__prod__ && !__test__) {
   const swaggerDocs = swaggerJsDoc({
     swaggerDefinition: {
       openapi: '3.0.0',
@@ -42,7 +42,11 @@ if (!__prod__ && !process.env.JEST_WORKER_ID) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 }
 
-app.use(morgan('dev'));
+// dont log if tests are running
+if (!__test__) {
+  app.use(morgan('dev'));
+}
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
